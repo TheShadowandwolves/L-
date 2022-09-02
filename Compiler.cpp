@@ -64,6 +64,19 @@ for (it = array->begin(); it != array->end(); it++)
   return false;
 }
 
+void change_insid(list<Var> *array, const Var var ){
+// void replace(list<Var> &array, const string &var->name, &var->value ) {
+  for (auto it = array->rbegin(); it != array->rend(); it++) {
+      if (it->name == var.name) {
+          it->type = var.type;
+          it->value = var.value;
+          /* To stop searching */
+          return;
+      }
+  }
+    /* Nothing replaced, error message? */
+}
+
 void store_val(list<Var>* val_array, Var var)
 {
   if (val_array->empty()){
@@ -79,24 +92,12 @@ void store_val(list<Var>* val_array, Var var)
     }
     else{
       Print("Given");
-      change_inside(val_array, var);
+      change_insid(val_array, var);
     }
   }
 }
 
-void change_inside(list<Var>* array, Var var ){
-// void replace(list<Var> &array, const string &var->name, &var->value ) {
-  for (auto it = array->rbegin(); it != array->rend(); it++) {
-      if (it->name == var.name) {
-          it->type = var.type;
-          it->value = var.value;
-          it->print_c();
-          /* To stop searching */
-          return;
-      }
-  }
-    /* Nothing replaced, error message? */
-}
+
   
 
 //get digits of string and compare if float or int etc.
