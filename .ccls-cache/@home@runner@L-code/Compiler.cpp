@@ -155,8 +155,180 @@ int enumFind(){
   }
     }
     while(ok == 1);
+  return 10;
 }
-
+//calc of two identical types
+string calc_i(string num1, string num2, char op){
+  int res;
+  num1 = erase_var(num1);
+  num2 = erase_var(num2);
+  int n1 = stoi(num1);
+  int n2 = stoi(num2);
+  if (op == '+'){
+  res = n1 + n2;
+  }
+  else if (op == '-'){
+  res = n1 - n2;
+  }
+  else if (op == '*'){
+  res = n1 * n2;
+  }
+  else if (op == '/'){
+  if (n2){
+    res = n1 / n2;
+  }
+    else {
+       cout << "Invalid Input - cannot devide by 0";
+    }
+    }
+  return to_string(res);
+}
+string calc_d(string num1, string num2, char op){
+  double res;
+  num1 = erase_var(num1);
+  num2 = erase_var(num2);
+  double n1 = stod(num1);
+  double n2 = stod(num2);
+  if (op == '+'){
+  res = (n1 + n2);
+  }
+  else if (op == '-'){
+    res = (n1 - n2);
+  }
+  else if (op == '*'){
+    res = (n1 * n2);
+  }
+  else if (op == '/'){
+  
+  if (n2){
+    res = n1 / n2;
+    }
+    else {
+       cout << "Invalid Input - cannot devide by 0";
+    }
+  }
+  return to_string(res);
+}
+string calc_s(string num1, string num2, char op){
+    string res;
+  num1 = erase_var(num1);
+  num2 = erase_var(num2);
+  
+  if (op == '+'){
+  res = num1 + num2;
+  }
+  else if (op == '-'){
+    res = num1.substr(0,num2.find(""));
+  }
+  else if (op == '*'){
+    cout << "Invalid operation - cannot multiply strings";
+  }
+  else if (op == '/'){
+  
+       cout << "Invalid Input - cannot devide strings";
+    
+  }
+  return res;
+}
+// calc of two different types
+string calc_id(string num1, string num2, char op){
+  double res;
+  num1 = erase_var(num1);
+  num2 = erase_var(num2);
+  int n1 = stoi(num1);
+  double n2 = stod(num2);
+  if (op == '+'){
+  res = n1 + n2;
+  }
+  else if (op == '-'){
+  res = n1 - n2;
+  }
+  else if (op == '*'){
+  res = n1 * n2;
+  }
+  else if (op == '/'){
+  if (n2){
+    res = n1 / n2;
+  }
+    else {
+       cout << "Invalid Input - cannot devide by 0";
+    }
+    }
+  return to_string(res);
+}
+string calc_di(string num1, string num2, char op){
+  double res;
+  num1 = erase_var(num1);
+  num2 = erase_var(num2);
+  int n1 = stoi(num1);
+  double n2 = stod(num2);
+  if (op == '+'){
+  res = n1 + n2;
+  }
+  else if (op == '-'){
+  res = n1 - n2;
+  }
+  else if (op == '*'){
+  res = n1 * n2;
+  }
+  else if (op == '/'){
+  if (n2){
+    res = n1 / n2;
+  }
+    else {
+       cout << "Invalid Input - cannot devide by 0";
+    }
+    }
+  return to_string(res);
+}
+string calc_is_si(string num1, string num2, char op){
+  string res;
+  num1 = erase_var(num1);
+  num2 = erase_var(num2);
+  int n1 = stoi(num1);
+  string n2 = num2;
+  if (op == '+'){
+  res = num1 + num2;
+  }
+  else if (op == '-'){
+   cout << "Invalid operation - cannot minus string from int";
+  }
+  else if (op == '*'){
+  for (int i = 0; i < n1; i++){
+    num2 += num2;
+    }
+    res = num2;
+  }
+  else if (op == '/'){
+  
+       cout << "Invalid Input - cannot devide strings";
+  }
+  return res;
+}
+string calc_ds_sd(string num1, string num2, char op){
+  string res;
+  num1 = erase_var(num1);
+  num2 = erase_var(num2);
+  int n1 = stoi(num1);
+  string n2 = num2;
+  if (op == '+'){
+  res = num1 + num2;
+  }
+  else if (op == '-'){
+   cout << "Invalid operation - cannot minus string from double";
+  }
+  else if (op == '*'){
+  for (int i = 0; i < n1; i++){
+    num2 += num2;
+    }
+    res = num2;
+  }
+  else if (op == '/'){
+  
+       cout << "Invalid Input - cannot devide strings";
+  }
+  return res;
+}
 int cases()
   {
     int enumVar = enumFind();
@@ -177,18 +349,13 @@ int cases()
           cin >> num1;
           cin >> num2;
           Print(num1);
+          //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_i = stoi(num1) + stoi(num2);
-            var1.value = to_string(res_i); 
+            var1.value = calc_i(num1, num2, '+'); 
             var1.type = "int";
           }
           else if (input_type(num1) == '%' && input_type(num2) == '%'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_d = stod(num1) + stod(num2);
-            var1.value = to_string(res_d); 
+            var1.value = calc_d(num1, num2, '+'); 
             var1.type = "double";
           }
           else if (input_type(num1) == '/' && input_type(num2) == '/'){
@@ -198,12 +365,30 @@ int cases()
             var1.value = res_s; 
             var1.type = "string";
           }
-          else if (input_type(num1) == '$' && input_type(num2) == '%' || input_type(num1) == '%' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_d = stod(num1) + stod(num2) + 0.0;
-            var1.value = to_string(res_d); 
+            //different
+          else if (input_type(num1) == '$' && input_type(num2) == '%'){
+            var1.value = calc_id(num1, num2, '+'); 
             var1.type = "double";
+          }
+          else if(input_type(num1) == '%' && input_type(num2) == '$'){
+            var1.value = calc_di(num1, num2, '+'); 
+            var1.type = "double";
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '$'){
+            var1.value = calc_is_si(num2, num1, '+'); 
+            var1.type = "string";
+          }
+          else if (input_type(num1) == '$' && input_type(num2) == '/'){
+            var1.value = calc_is_si(num1, num2, '+'); 
+            var1.type = "string";
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '%'){
+            var1.value = calc_ds_sd(num2, num1, '+'); 
+            var1.type = "string";
+          }
+          else if (input_type(num1) == '%' && input_type(num2) == '/'){
+            var1.value = calc_ds_sd(num1, num2, '+'); 
+            var1.type = "string";
           }
           else {
             Print("Invalid Operation - cannot convert types");
