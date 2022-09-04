@@ -10,8 +10,7 @@ using namespace std;
 void Var::print_c(){
       Print(name + " = " + value);
 }
-// array that stores all variables
-list<Var> val_array;
+
 
 list<Var>::iterator search_val(list<Var>* array, Var var){
 //Create an iterator of std::list
@@ -30,6 +29,7 @@ for (it = array->begin(); it != array->end(); it++)
   return is;
 }
 // returns Var that has the same name
+
 Var search_var(list<Var>* array, string gname){
 //Create an iterator of std::list
 list<Var>::iterator it;
@@ -42,11 +42,15 @@ for (it = array->begin(); it != array->end(); it++)
       var.name = it->name;
       var.value = it->value;
       var.type = it->type;
-      break;
+      return var;
     }
 }
   //Print(is->name);
-  return var;
+  Var fal;
+  fal.name = "NONE";
+  fal.value = "0";
+  
+  return fal;
 }
 
 bool search_if_val(list<Var>* array, Var var){
@@ -118,6 +122,9 @@ string erase_var(string var){
     //return double
   else if (g == '%'){
     return '%';
+  }
+  else if (g == '.'){
+    return '.';
   }
     //return false
   else{
@@ -308,8 +315,8 @@ string calc_di(string num1, string num2, char op){
   double res;
   num1 = erase_var(num1);
   num2 = erase_var(num2);
-  int n1 = stoi(num1);
-  double n2 = stod(num2);
+  double n1 = stod(num1);
+  int n2 = stoi(num2);
   if (op == '+'){
   res = n1 + n2;
   }
@@ -387,13 +394,50 @@ string calc_ds_sd(string num1, string num2, char op){
   }
   return res;
 }
+
+char get_variable_type(list<Var>* array, string var){
+  char save = var[0];
+  Print("save: " + to_string(save));
+      var = erase_var(var);
+  Var temp = search_var(array, var);
+  if (temp.name != "NONE"){
+    Print("type: " + to_string(temp.type));
+    return temp.type;   
+  }
+  else {
+    return save;
+  }
+}
+string get_variable(list<Var> array, string var){
+  Print(var);
+  var = erase_var(var);
+  Print("new var: " + var);
+  Var temp = search_var(&array, var);
+  Print("Found Var name: " + temp.name);
+    Print("Found Var value: " + temp.value);
+  if (temp.name != "NONE"){
+    string final = temp.type + temp.value;
+    Print(final);
+    return final;
+  
+    }
+  else {
+    return var;
+  }
+
+}
+
+
 int cases()
   {
+    // array that stores all variables
+    list<Var> val_array;
     int enumVar = enumFind();
     char op;
     string val, res_s;
     Var var1;
     string num1, num2;
+    char c1, c2;
 
     switch (enumVar)
     {
@@ -407,46 +451,61 @@ int cases()
           cin >> num1;
           cin >> num2;
           Print(num1);
+        //check input type
+          c1 = input_type(num1);
+          c2 = input_type(num2);
+          if (c1 == '.'){
+            Print("Get into .");
+            c1 = get_variable_type(&val_array, num1);
+            Print(c1);
+            num1 = get_variable(val_array,num1);
+            Print(num1);
+          }
+          if (c2 == '.'){
+            c2 = get_variable_type(&val_array, num2);
+            num2 = get_variable(val_array, num2);
+          }
+
           //equal
-          if (input_type(num1) == '$' && input_type(num2) == '$'){
+          if (c1 == '$' && c2 == '$'){
             var1.value = calc_i(num1, num2, op); 
-            var1.type = "int";
+            var1.type = '$';
           }
-          else if (input_type(num1) == '%' && input_type(num2) == '%'){
+          else if (c1 == '%' && c2 == '%'){
             var1.value = calc_d(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
-          else if (input_type(num1) == '/' && input_type(num2) == '/'){
+          else if (c1 == '/' && c2 == '/'){
             num1 = erase_var(num1);
             num2 = erase_var(num2);
             res_s = num1 + num2;
             var1.value = res_s; 
-            var1.type = "string";
+            var1.type = '/';
           }
             //different
-          else if (input_type(num1) == '$' && input_type(num2) == '%'){
+          else if (c1 == '$' && c2 == '%'){
             var1.value = calc_id(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
-          else if(input_type(num1) == '%' && input_type(num2) == '$'){
+          else if(c1 == '%' && c2 == '$'){
             var1.value = calc_di(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
-          else if (input_type(num1) == '/' && input_type(num2) == '$'){
+          else if (c1 == '/' && c2 == '$'){
             var1.value = calc_is_si(num2, num1,op); 
-            var1.type = "string";
+            var1.type = '/';
           }
-          else if (input_type(num1) == '$' && input_type(num2) == '/'){
+          else if (c1 == '$' && c2 == '/'){
             var1.value = calc_is_si(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
-          else if (input_type(num1) == '/' && input_type(num2) == '%'){
+          else if (c1 == '/' && c2 == '%'){
             var1.value = calc_ds_sd(num2, num1, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
-          else if (input_type(num1) == '%' && input_type(num2) == '/'){
+          else if (c1 == '%' && c2 == '/'){
             var1.value = calc_ds_sd(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else {
             Print("Invalid Operation - cannot convert types");
@@ -471,41 +530,41 @@ int cases()
                     //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
             var1.value = calc_i(num1, num2, op); 
-            var1.type = "int";
+            var1.type = '$';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '%'){
             var1.value = calc_d(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '/'){
         
             var1.value = calc_s(num1, num2, op); 
-            var1.type = "string";
+            var1.type ='/';
           }
             //different
           else if (input_type(num1) == '$' && input_type(num2) == '%'){
             var1.value = calc_id(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
           else if(input_type(num1) == '%' && input_type(num2) == '$'){
             var1.value = calc_di(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '$'){
             var1.value = calc_is_si(num2, num1,op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '$' && input_type(num2) == '/'){
             var1.value = calc_is_si(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '%'){
             var1.value = calc_ds_sd(num2, num1, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '/'){
             var1.value = calc_ds_sd(num1, num2, op); 
-            var1.type = "string";
+            var1.type ='/';
           }
           else {
             Print("Invalid Operation - cannot convert types");
@@ -528,41 +587,41 @@ int cases()
              //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
             var1.value = calc_i(num1, num2, op); 
-            var1.type = "int";
+            var1.type ='$';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '%'){
             var1.value = calc_d(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '/'){
             
             var1.value = calc_s(num1 , num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
             //different
           else if (input_type(num1) == '$' && input_type(num2) == '%'){
             var1.value = calc_id(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
           else if(input_type(num1) == '%' && input_type(num2) == '$'){
             var1.value = calc_di(num1, num2, op); 
-            var1.type = "double";
+            var1.type ='%';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '$'){
             var1.value = calc_is_si(num2, num1,op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '$' && input_type(num2) == '/'){
             var1.value = calc_is_si(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '%'){
             var1.value = calc_ds_sd(num2, num1, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '/'){
             var1.value = calc_ds_sd(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else {
             Print("Invalid Operation - cannot convert types");
@@ -584,41 +643,41 @@ int cases()
                    //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
             var1.value = calc_i(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '$';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '%'){
             var1.value = calc_d(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '/'){
             
             var1.value = calc_s(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
             //different
           else if (input_type(num1) == '$' && input_type(num2) == '%'){
             var1.value = calc_id(num1, num2, op); 
-            var1.type = "double";
+            var1.type ='%';
           }
           else if(input_type(num1) == '%' && input_type(num2) == '$'){
             var1.value = calc_di(num1, num2, op); 
-            var1.type = "double";
+            var1.type ='%';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '$'){
             var1.value = calc_is_si(num2, num1,op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '$' && input_type(num2) == '/'){
             var1.value = calc_is_si(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '%'){
             var1.value = calc_ds_sd(num2, num1, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '/'){
             var1.value = calc_ds_sd(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else {
             Print("Invalid Operation - cannot convert types");
@@ -643,41 +702,42 @@ int cases()
           //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
             var1.value = calc_i(num1, num2, op); 
-            var1.type = "int";
+            var1.type = '$';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '%'){
             var1.value = calc_d(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '/'){
            
             var1.value = calc_s(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
+            
           }
             //different
           else if (input_type(num1) == '$' && input_type(num2) == '%'){
             var1.value = calc_id(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
           else if(input_type(num1) == '%' && input_type(num2) == '$'){
             var1.value = calc_di(num1, num2, op); 
-            var1.type = "double";
+            var1.type = '%';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '$'){
             var1.value = calc_is_si(num2, num1,op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '$' && input_type(num2) == '/'){
             var1.value = calc_is_si(num1, num2, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '/' && input_type(num2) == '%'){
             var1.value = calc_ds_sd(num2, num1, op); 
-            var1.type = "string";
+            var1.type = '/';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '/'){
             var1.value = calc_ds_sd(num1, num2, op); 
-            var1.type = "string";
+            var1.type ='/';
           }
           else {
             Print("Invalid Operation - cannot convert types");

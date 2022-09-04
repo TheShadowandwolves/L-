@@ -10,8 +10,7 @@ using namespace std;
 void Var::print_c(){
       Print(name + " = " + value);
 }
-// array that stores all variables
-list<Var> val_array;
+
 
 list<Var>::iterator search_val(list<Var>* array, Var var){
 //Create an iterator of std::list
@@ -29,6 +28,30 @@ for (it = array->begin(); it != array->end(); it++)
   //Print(is->name);
   return is;
 }
+// returns Var that has the same name
+
+Var search_var(list<Var>* array, string gname){
+//Create an iterator of std::list
+list<Var>::iterator it;
+Var var;
+// Make iterate point to begining and incerement it one by one till it reaches the end of list.
+for (it = array->begin(); it != array->end(); it++)
+{
+  Print(it->name);
+    if(it->name == gname){
+      var.name = it->name;
+      var.value = it->value;
+      var.type = it->type;
+      return var;
+    }
+}
+  //Print(is->name);
+  Var fal;
+  fal.name = "NONE";
+  fal.value = "0";
+  
+  return fal;
+}
 
 bool search_if_val(list<Var>* array, Var var){
 //Create an iterator of list
@@ -43,6 +66,19 @@ for (it = array->begin(); it != array->end(); it++)
 }
   //Print(is->name);
   return false;
+}
+
+void change_insid(list<Var> *array, const Var var ){
+// void replace(list<Var> &array, const string &var->name, &var->value ) {
+  for (auto it = array->rbegin(); it != array->rend(); it++) {
+      if (it->name == var.name) {
+          it->type = var.type;
+          it->value = var.value;
+          /* To stop searching */
+          return;
+      }
+  }
+    /* Nothing replaced, error message? */
 }
 
 void store_val(list<Var>* val_array, Var var)
@@ -60,9 +96,13 @@ void store_val(list<Var>* val_array, Var var)
     }
     else{
       Print("Given");
+      change_insid(val_array, var);
     }
   }
 }
+
+
+  
 
 //get digits of string and compare if float or int etc.
 string erase_var(string var){
@@ -82,6 +122,9 @@ string erase_var(string var){
     //return double
   else if (g == '%'){
     return '%';
+  }
+  else if (g == '.'){
+    return '.';
   }
     //return false
   else{
@@ -181,6 +224,9 @@ string calc_i(string num1, string num2, char op){
        cout << "Invalid Input - cannot devide by 0";
     }
     }
+  else if (op == '^'){
+    res = pow(n1, n2);
+  }
   return to_string(res);
 }
 string calc_d(string num1, string num2, char op){
@@ -207,6 +253,9 @@ string calc_d(string num1, string num2, char op){
        cout << "Invalid Input - cannot devide by 0";
     }
   }
+  else if (op == '^'){
+    res = pow(n1, n2);
+  }
   return to_string(res);
 }
 string calc_s(string num1, string num2, char op){
@@ -227,6 +276,9 @@ string calc_s(string num1, string num2, char op){
   
        cout << "Invalid Input - cannot devide strings";
     
+  }
+  else if (op == '^'){
+    cout << "Invalid operation - cannot pow a string";
   }
   return res;
 }
@@ -254,14 +306,17 @@ string calc_id(string num1, string num2, char op){
        cout << "Invalid Input - cannot devide by 0";
     }
     }
+  else if (op == '^'){
+    res = pow(n1, n2);
+  }
   return to_string(res);
 }
 string calc_di(string num1, string num2, char op){
   double res;
   num1 = erase_var(num1);
   num2 = erase_var(num2);
-  int n1 = stoi(num1);
-  double n2 = stod(num2);
+  double n1 = stod(num1);
+  int n2 = stoi(num2);
   if (op == '+'){
   res = n1 + n2;
   }
@@ -279,8 +334,12 @@ string calc_di(string num1, string num2, char op){
        cout << "Invalid Input - cannot devide by 0";
     }
     }
+  else if (op == '^'){
+    res = pow(n1, n2);
+  }
   return to_string(res);
 }
+// need also for opposite different func
 string calc_is_si(string num1, string num2, char op){
   string res;
   num1 = erase_var(num1);
@@ -302,6 +361,9 @@ string calc_is_si(string num1, string num2, char op){
   else if (op == '/'){
   
        cout << "Invalid Input - cannot devide strings";
+  }
+  else if (op == '^'){
+    cout << "Invalid Operation - cannot pow strings";
   }
   return res;
 }
@@ -327,68 +389,123 @@ string calc_ds_sd(string num1, string num2, char op){
   
        cout << "Invalid Input - cannot devide strings";
   }
+  else if (op =='^'){
+      cout << "Invalid Operation - cannot pow strings";
+  }
   return res;
 }
+
+char get_variable_type(list<Var>* array, string var){
+  char save = var[0];
+  Print("save: " + to_string(save));
+      var = erase_var(var);
+  Var temp = search_var(array, var);
+  if (temp.name != "NONE"){
+    Print("type: " + to_string(temp.type));
+    return temp.type;   
+  }
+  else {
+    return save;
+  }
+}
+string get_variable(list<Var> array, string var){
+  Print(var);
+  var = erase_var(var);
+  Print("new var: " + var);
+  Var temp = search_var(&array, var);
+  Print("Found Var name: " + temp.name);
+    Print("Found Var value: " + temp.value);
+  if (temp.name != "NONE"){
+    string final = temp.type + temp.value;
+    Print(final);
+    return final;
+  
+    }
+  else {
+    return var;
+  }
+
+}
+
+
 int cases()
   {
+    // array that stores all variables
+    list<Var> val_array;
     int enumVar = enumFind();
-    string val;
+    char op;
+    string val, res_s;
     Var var1;
     string num1, num2;
-    int res_i;
-    double res_d;
-    string res_s;
+    char c1, c2;
+
     switch (enumVar)
     {
         case 0:
         {
 // needs to implement that previous variables can be taken
           Print("add");
+          op = '+';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
           Print(num1);
+        //check input type
+          c1 = input_type(num1);
+          c2 = input_type(num2);
+          if (c1 == '.'){
+            Print("Get into .");
+            c1 = get_variable_type(&val_array, num1);
+            Print(c1);
+            num1 = get_variable(val_array,num1);
+            Print(num1);
+          }
+          if (c2 == '.'){
+            c2 = get_variable_type(&val_array, num2);
+            num2 = get_variable(val_array, num2);
+          }
+
           //equal
-          if (input_type(num1) == '$' && input_type(num2) == '$'){
-            var1.value = calc_i(num1, num2, '+'); 
-            var1.type = "int";
+          if (c1 == '$' && c2 == '$'){
+            var1.value = calc_i(num1, num2, op); 
+            var1.type = '$';
           }
-          else if (input_type(num1) == '%' && input_type(num2) == '%'){
-            var1.value = calc_d(num1, num2, '+'); 
-            var1.type = "double";
+          else if (c1 == '%' && c2 == '%'){
+            var1.value = calc_d(num1, num2, op); 
+            var1.type = '%';
           }
-          else if (input_type(num1) == '/' && input_type(num2) == '/'){
+          else if (c1 == '/' && c2 == '/'){
             num1 = erase_var(num1);
             num2 = erase_var(num2);
             res_s = num1 + num2;
             var1.value = res_s; 
-            var1.type = "string";
+            var1.type = '/';
           }
             //different
-          else if (input_type(num1) == '$' && input_type(num2) == '%'){
-            var1.value = calc_id(num1, num2, '+'); 
-            var1.type = "double";
+          else if (c1 == '$' && c2 == '%'){
+            var1.value = calc_id(num1, num2, op); 
+            var1.type = '%';
           }
-          else if(input_type(num1) == '%' && input_type(num2) == '$'){
-            var1.value = calc_di(num1, num2, '+'); 
-            var1.type = "double";
+          else if(c1 == '%' && c2 == '$'){
+            var1.value = calc_di(num1, num2, op); 
+            var1.type = '%';
           }
-          else if (input_type(num1) == '/' && input_type(num2) == '$'){
-            var1.value = calc_is_si(num2, num1, '+'); 
-            var1.type = "string";
+          else if (c1 == '/' && c2 == '$'){
+            var1.value = calc_is_si(num2, num1,op); 
+            var1.type = '/';
           }
-          else if (input_type(num1) == '$' && input_type(num2) == '/'){
-            var1.value = calc_is_si(num1, num2, '+'); 
-            var1.type = "string";
+          else if (c1 == '$' && c2 == '/'){
+            var1.value = calc_is_si(num1, num2, op); 
+            var1.type = '/';
           }
-          else if (input_type(num1) == '/' && input_type(num2) == '%'){
-            var1.value = calc_ds_sd(num2, num1, '+'); 
-            var1.type = "string";
+          else if (c1 == '/' && c2 == '%'){
+            var1.value = calc_ds_sd(num2, num1, op); 
+            var1.type = '/';
           }
-          else if (input_type(num1) == '%' && input_type(num2) == '/'){
-            var1.value = calc_ds_sd(num1, num2, '+'); 
-            var1.type = "string";
+          else if (c1 == '%' && c2 == '/'){
+            var1.value = calc_ds_sd(num1, num2, op); 
+            var1.type = '/';
           }
           else {
             Print("Invalid Operation - cannot convert types");
@@ -404,35 +521,50 @@ int cases()
         case 1:
         {
           Print("sub");
+          op = '-';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
 
+                    //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_i = stoi(num1) - stoi(num2);
-            var1.value = to_string(res_i); 
-            var1.type = "int";
+            var1.value = calc_i(num1, num2, op); 
+            var1.type = '$';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '%'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_d = stod(num1) - stod(num2);
-            var1.value = to_string(res_d); 
-            var1.type = "double";
+            var1.value = calc_d(num1, num2, op); 
+            var1.type = '%';
           }
-          else if (input_type(num1) == '/' || input_type(num2) == '/'){
-            Print("Invalid Operation - cannot sub strings");
-            break;
+          else if (input_type(num1) == '/' && input_type(num2) == '/'){
+        
+            var1.value = calc_s(num1, num2, op); 
+            var1.type ='/';
           }
-          else if (input_type(num1) == '$' && input_type(num2) == '%' || input_type(num1) == '%' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_d = stod(num1) - stod(num2) + 0.0;
-            var1.value = to_string(res_d); 
-            var1.type = "double";
+            //different
+          else if (input_type(num1) == '$' && input_type(num2) == '%'){
+            var1.value = calc_id(num1, num2, op); 
+            var1.type = '%';
+          }
+          else if(input_type(num1) == '%' && input_type(num2) == '$'){
+            var1.value = calc_di(num1, num2, op); 
+            var1.type = '%';
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '$'){
+            var1.value = calc_is_si(num2, num1,op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '$' && input_type(num2) == '/'){
+            var1.value = calc_is_si(num1, num2, op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '%'){
+            var1.value = calc_ds_sd(num2, num1, op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '%' && input_type(num2) == '/'){
+            var1.value = calc_ds_sd(num1, num2, op); 
+            var1.type ='/';
           }
           else {
             Print("Invalid Operation - cannot convert types");
@@ -447,52 +579,54 @@ int cases()
         case 2:
         {
           Print("div");
+          op='/';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
-   if (input_type(num1) == '$' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            if (stoi(num2)){
-            res_i = stoi(num1) / stoi(num2);
-            var1.value = to_string(res_i); 
-            var1.type = "int";
-              }
-            else{
-                Print("Invalid Operation - cannot div by 0");
-             }
+             //equal
+          if (input_type(num1) == '$' && input_type(num2) == '$'){
+            var1.value = calc_i(num1, num2, op); 
+            var1.type ='$';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '%'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            if (stod(num2)){
-            res_d = stod(num1) / stod(num2);
-            var1.value = to_string(res_d); 
-            var1.type = "double";
-              }
-            else{
-                Print("Invalid Operation - cannot div by 0");
-             }
+            var1.value = calc_d(num1, num2, op); 
+            var1.type = '%';
           }
-          else if (input_type(num1) == '/' || input_type(num2) == '/'){
-            Print("Invalid Operation - cannot div strings");
-            break;
+          else if (input_type(num1) == '/' && input_type(num2) == '/'){
+            
+            var1.value = calc_s(num1 , num2, op); 
+            var1.type = '/';
           }
-          else if (input_type(num1) == '$' && input_type(num2) == '%' || input_type(num1) == '%' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            if (stod(num2)){
-            res_d = stod(num1) - stod(num2) + 0.0;
-            var1.value = to_string(res_d); 
-            var1.type = "double";
-              }
+            //different
+          else if (input_type(num1) == '$' && input_type(num2) == '%'){
+            var1.value = calc_id(num1, num2, op); 
+            var1.type = '%';
+          }
+          else if(input_type(num1) == '%' && input_type(num2) == '$'){
+            var1.value = calc_di(num1, num2, op); 
+            var1.type ='%';
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '$'){
+            var1.value = calc_is_si(num2, num1,op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '$' && input_type(num2) == '/'){
+            var1.value = calc_is_si(num1, num2, op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '%'){
+            var1.value = calc_ds_sd(num2, num1, op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '%' && input_type(num2) == '/'){
+            var1.value = calc_ds_sd(num1, num2, op); 
+            var1.type = '/';
           }
           else {
             Print("Invalid Operation - cannot convert types");
             break;
           }
-            // do stuff
           store_val(&val_array, var1);
           var1.print_c();
             break;
@@ -500,35 +634,50 @@ int cases()
         case 3:
         {
           Print("mul");
+          op = '*';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
 
+                   //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_i = stoi(num1) * stoi(num2);
-            var1.value = to_string(res_i); 
-            var1.type = "int";
+            var1.value = calc_i(num1, num2, op); 
+            var1.type = '$';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '%'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_d = stod(num1) * stod(num2);
-            var1.value = to_string(res_d); 
-            var1.type = "double";
+            var1.value = calc_d(num1, num2, op); 
+            var1.type = '%';
           }
-          else if (input_type(num1) == '/' || input_type(num2) == '/'){
-            Print("Invalid Operation - cannot mul strings");
-            break;
+          else if (input_type(num1) == '/' && input_type(num2) == '/'){
+            
+            var1.value = calc_s(num1, num2, op); 
+            var1.type = '/';
           }
-          else if (input_type(num1) == '$' && input_type(num2) == '%' || input_type(num1) == '%' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_d = stod(num1) - stod(num2) + 0.0;
-            var1.value = to_string(res_d); 
-            var1.type = "double";
+            //different
+          else if (input_type(num1) == '$' && input_type(num2) == '%'){
+            var1.value = calc_id(num1, num2, op); 
+            var1.type ='%';
+          }
+          else if(input_type(num1) == '%' && input_type(num2) == '$'){
+            var1.value = calc_di(num1, num2, op); 
+            var1.type ='%';
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '$'){
+            var1.value = calc_is_si(num2, num1,op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '$' && input_type(num2) == '/'){
+            var1.value = calc_is_si(num1, num2, op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '%'){
+            var1.value = calc_ds_sd(num2, num1, op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '%' && input_type(num2) == '/'){
+            var1.value = calc_ds_sd(num1, num2, op); 
+            var1.type = '/';
           }
           else {
             Print("Invalid Operation - cannot convert types");
@@ -543,37 +692,52 @@ int cases()
         case 4:
         {
           Print("powr");
+          op = '^';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
          // var1.value = to_string(pow(num1, num2)); 
          
-
+          //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_i = pow(stoi(num1) , stoi(num2));
-            var1.value = to_string(res_i); 
-            var1.type = "int";
+            var1.value = calc_i(num1, num2, op); 
+            var1.type = '$';
           }
           else if (input_type(num1) == '%' && input_type(num2) == '%'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_d = pow(stod(num1) , stod(num2));
-            var1.value = to_string(res_d); 
-            var1.type = "double";
+            var1.value = calc_d(num1, num2, op); 
+            var1.type = '%';
           }
-          else if (input_type(num1) == '/' || input_type(num2) == '/'){
-            Print("Invalid Operation - cannot mul strings");
-            break;
+          else if (input_type(num1) == '/' && input_type(num2) == '/'){
+           
+            var1.value = calc_s(num1, num2, op); 
+            var1.type = '/';
+            
           }
-          else if (input_type(num1) == '$' && input_type(num2) == '%' || input_type(num1) == '%' && input_type(num2) == '$'){
-            num1 = erase_var(num1);
-            num2 = erase_var(num2);
-            res_d = stod(num1) - stod(num2) + 0.0;
-            var1.value = to_string(res_d); 
-            var1.type = "double";
+            //different
+          else if (input_type(num1) == '$' && input_type(num2) == '%'){
+            var1.value = calc_id(num1, num2, op); 
+            var1.type = '%';
+          }
+          else if(input_type(num1) == '%' && input_type(num2) == '$'){
+            var1.value = calc_di(num1, num2, op); 
+            var1.type = '%';
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '$'){
+            var1.value = calc_is_si(num2, num1,op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '$' && input_type(num2) == '/'){
+            var1.value = calc_is_si(num1, num2, op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '/' && input_type(num2) == '%'){
+            var1.value = calc_ds_sd(num2, num1, op); 
+            var1.type = '/';
+          }
+          else if (input_type(num1) == '%' && input_type(num2) == '/'){
+            var1.value = calc_ds_sd(num1, num2, op); 
+            var1.type ='/';
           }
           else {
             Print("Invalid Operation - cannot convert types");

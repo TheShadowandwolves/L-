@@ -6,7 +6,7 @@ class Var{
   public:
     string name;
     string value;
-    string type;
+    char type;
     void print_c();
 };
 
