@@ -30,12 +30,12 @@ for (it = array->begin(); it != array->end(); it++)
 }
 // returns Var that has the same name
 
-Var search_var(list<Var>* array, string gname){
+Var search_var(list<Var> array, string gname){
 //Create an iterator of std::list
 list<Var>::iterator it;
 Var var;
 // Make iterate point to begining and incerement it one by one till it reaches the end of list.
-for (it = array->begin(); it != array->end(); it++)
+for (it = array.begin(); it != array.end(); it++)
 {
   Print(it->name);
     if(it->name == gname){
@@ -53,11 +53,11 @@ for (it = array->begin(); it != array->end(); it++)
   return fal;
 }
 
-bool search_if_val(list<Var>* array, Var var){
+bool search_if_val(list<Var> array, Var var){
 //Create an iterator of list
 list<Var>::iterator it;
 
-for (it = array->begin(); it != array->end(); it++)
+for (it = array.begin(); it != array.end(); it++)
 {
   Print(it->name);
     if(it->name == var.name){
@@ -68,9 +68,9 @@ for (it = array->begin(); it != array->end(); it++)
   return false;
 }
 
-void change_insid(list<Var> *array, const Var var ){
+void change_insid(list<Var> array, const Var var ){
 // void replace(list<Var> &array, const string &var->name, &var->value ) {
-  for (auto it = array->rbegin(); it != array->rend(); it++) {
+  for (auto it = array.rbegin(); it != array.rend(); it++) {
       if (it->name == var.name) {
           it->type = var.type;
           it->value = var.value;
@@ -81,17 +81,17 @@ void change_insid(list<Var> *array, const Var var ){
     /* Nothing replaced, error message? */
 }
 
-void store_val(list<Var>* val_array, Var var)
+void store_val(list<Var> val_array, Var var)
 {
-  if (val_array->empty()){
-  val_array->push_front(var);
-  val_array->begin()->print_c();
+  if (val_array.empty()){
+  val_array.push_front(var);
+  val_array.begin()->print_c();
     Print("Entering empty");
     }
   else{
     if (!search_if_val(val_array, var)){
-      val_array->push_front(var);
-      val_array->begin()->print_c();
+      val_array.push_front(var);
+      val_array.begin()->print_c();
       Print("Entering not found");
     }
     else{
@@ -395,7 +395,7 @@ string calc_ds_sd(string num1, string num2, char op){
   return res;
 }
 
-char get_variable_type(list<Var>* array, string var){
+char get_variable_type(list<Var> array, string var){
   char save = var[0];
   Print("save: " + to_string(save));
       var = erase_var(var);
@@ -412,7 +412,7 @@ string get_variable(list<Var> array, string var){
   Print(var);
   var = erase_var(var);
   Print("new var: " + var);
-  Var temp = search_var(&array, var);
+  Var temp = search_var(array, var);
   Print("Found Var name: " + temp.name);
     Print("Found Var value: " + temp.value);
   if (temp.name != "NONE"){
@@ -456,13 +456,13 @@ int cases()
           c2 = input_type(num2);
           if (c1 == '.'){
             Print("Get into .");
-            c1 = get_variable_type(&val_array, num1);
+            c1 = get_variable_type(val_array, num1);
             Print(c1);
             num1 = get_variable(val_array,num1);
             Print(num1);
           }
           if (c2 == '.'){
-            c2 = get_variable_type(&val_array, num2);
+            c2 = get_variable_type(val_array, num2);
             num2 = get_variable(val_array, num2);
           }
 
@@ -512,7 +512,7 @@ int cases()
             break;
           }
          
-          store_val(&val_array, var1);
+          store_val(val_array, var1);
           var1.print_c();
   
             // do stuff
@@ -570,7 +570,7 @@ int cases()
             Print("Invalid Operation - cannot convert types");
             break;
           }
-          store_val(&val_array, var1);
+          store_val(val_array, var1);
           var1.print_c();
 
             // do stuff
@@ -627,7 +627,7 @@ int cases()
             Print("Invalid Operation - cannot convert types");
             break;
           }
-          store_val(&val_array, var1);
+          store_val(val_array, var1);
           var1.print_c();
             break;
         }
@@ -684,7 +684,7 @@ int cases()
             break;
           }
           
-          store_val(&val_array, var1);
+          store_val(val_array, var1);
           var1.print_c();
             // do stuff
             break;
@@ -745,7 +745,7 @@ int cases()
           }
           
           
-          store_val(&val_array, var1);
+          store_val(val_array, var1);
           var1.print_c();
             // do stuff
             break;
