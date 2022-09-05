@@ -1,0 +1,10 @@
+.vscode/tasks.json
+.breakpoints
+.ccls-cache
+.replit
+Compiler.o
+main
+main-debug
+main.o
+Makefile
+replit.nix
