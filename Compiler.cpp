@@ -32,10 +32,34 @@ for (it = array->begin(); it != array->end(); it++)
 
 Var search_var(list<Var> array, string gname){
 //Create an iterator of std::list
-list<Var>::iterator it;
-Var var;
 // Make iterate point to begining and incerement it one by one till it reaches the end of list.
-for (it = array.begin(); it != array.end(); it++)
+//list<Var>::iterator it;
+// temp class var contains string name, string value and char type
+Var var;
+
+
+  auto it = std::find_if( std::begin( array ),
+                            std::end( array ),
+                            [gname]( Var const& v ){ return v.name == gname; } );
+        
+  if ( array.end() == it )
+    {
+        std::cout << "item not found" << std::endl;
+    }
+    else
+    {
+        const int pos = std::distance( array.begin(), it ) + 1;
+        std::cout << "item  found at position " << pos << std::endl;
+    }
+  var.name = it->name;
+  var.value = it->value;
+  var.type = it->type;
+  Print("Found with value: " + var.name + var.value);
+return var;
+  }
+
+  
+/*for (it = array.begin(); it != array.end(); it++)
 {
   Print(it->name);
     if(it->name == gname){
@@ -51,7 +75,7 @@ for (it = array.begin(); it != array.end(); it++)
   fal.value = "0";
   
   return fal;
-}
+}*/
 
 bool search_if_val(list<Var> array, Var var){
 //Create an iterator of list
@@ -396,9 +420,9 @@ string calc_ds_sd(string num1, string num2, char op){
 }
 
 char get_variable_type(list<Var> array, string var){
-  char save = var[0];
-  Print("save: " + to_string(save));
-      var = erase_var(var);
+  char save = '.';
+  
+  var = erase_var(var);
   Var temp = search_var(array, var);
   if (temp.name != "NONE"){
     Print("type: " + to_string(temp.type));
