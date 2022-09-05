@@ -1,6 +1,6 @@
 .vscode/tasks.json
 .breakpoints
-.ccls-cache
+.ccls-cache/
 .replit
 Compiler.o
 main
