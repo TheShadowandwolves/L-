@@ -14,10 +14,10 @@ class Var{
 void Print();
 template <typename T>  void Print(T);
 string Write();
-int cases();
-list<Var>::iterator search_val(list<Var>, Var);
+int cases(list<Var>*);
+list<Var>::iterator search_val(list<Var>*, Var);
 bool search_if_val(list<Var>*, Var);
-void store_val(list<Var>, Var);
+void store_val(list<Var>*, Var);
 void Help();
 void store_val(list<Var>*, Var);
 string erase_var(string);

@@ -19,7 +19,7 @@ std::list<Var>::iterator it;
 // Make iterate point to begining and incerement it one by one till it reaches the end of list.
 for (it = array->begin(); it != array->end(); it++)
 {
-  Print(it->name);
+   //Print(it->name);
     if(it->name == var.name){
        is = it;
       break;
@@ -30,71 +30,56 @@ for (it = array->begin(); it != array->end(); it++)
 }
 // returns Var that has the same name
 
-Var search_var(list<Var> array, string gname){
+Var search_var(list<Var>* array, string gname){
 //Create an iterator of std::list
 // Make iterate point to begining and incerement it one by one till it reaches the end of list.
 //list<Var>::iterator it;
 // temp class var contains string name, string value and char type
-Var var;
+  Var var;
+  var.name = "NONE";
+  var.value = "0";
+  var.type = '!';
 
 
-  auto it = std::find_if( std::begin( array ),
-                            std::end( array ),
+  auto it = std::find_if( std::begin( *array ),
+                            std::end( *array ),
                             [gname]( Var const& v ){ return v.name == gname; } );
         
-  if ( array.end() == it )
+  if ( array->end() == it )
     {
         std::cout << "item not found" << std::endl;
     }
     else
     {
-        const int pos = std::distance( array.begin(), it ) + 1;
-        std::cout << "item  found at position " << pos << std::endl;
-    }
-  var.name = it->name;
-  var.value = it->value;
-  var.type = it->type;
-  Print("Found with value: " + var.name + var.value);
-return var;
-  }
-
-  
-/*for (it = array.begin(); it != array.end(); it++)
-{
-  Print(it->name);
-    if(it->name == gname){
+      const int pos = std::distance( array->begin(), it ) + 1;
+      //std::cout << "item  found at position " << pos << std::endl;
       var.name = it->name;
       var.value = it->value;
       var.type = it->type;
-      return var;
+      //Print("Found with value: " + var.name + var.value);
     }
-}
-  //Print(is->name);
-  Var fal;
-  fal.name = "NONE";
-  fal.value = "0";
-  
-  return fal;
-}*/
 
-bool search_if_val(list<Var> array, Var var){
+  return var;
+}
+
+bool search_if_val(list<Var>* array, Var var){
 //Create an iterator of list
 list<Var>::iterator it;
 
-for (it = array.begin(); it != array.end(); it++)
+for (it = array->begin(); it != array->end(); it++)
 {
-  Print(it->name);
+ // Print(it->name);
     if(it->name == var.name){
       return true;
     }
-}
+  }
   //Print(is->name);
   return false;
 }
 
-void change_insid(list<Var> array, const Var var ){
+void change_insid(list<Var>* array, const Var var ){
 // void replace(list<Var> &array, const string &var->name, &var->value ) {
-  for (auto it = array.rbegin(); it != array.rend(); it++) {
+  for (auto it = array->rbegin(); it != array->rend(); it++) {
       if (it->name == var.name) {
           it->type = var.type;
           it->value = var.value;
@@ -105,21 +90,21 @@ void change_insid(list<Var> array, const Var var ){
     /* Nothing replaced, error message? */
 }
 
-void store_val(list<Var> val_array, Var var)
+void store_val(list<Var>* val_array, Var var)
 {
-  if (val_array.empty()){
-  val_array.push_front(var);
-  val_array.begin()->print_c();
-    Print("Entering empty");
+  if (val_array->empty()){
+  val_array->push_front(var);
+  val_array->begin()->print_c();
+    //Print("Entering empty");
     }
   else{
     if (!search_if_val(val_array, var)){
-      val_array.push_front(var);
-      val_array.begin()->print_c();
-      Print("Entering not found");
+      val_array->push_front(var);
+      val_array->begin()->print_c();
+     // Print("Entering not found");
     }
     else{
-      Print("Given");
+      //Print("Given");
       change_insid(val_array, var);
     }
   }
@@ -419,29 +404,29 @@ string calc_ds_sd(string num1, string num2, char op){
   return res;
 }
 
-char get_variable_type(list<Var> array, string var){
+char get_variable_type(list<Var>* array, string var){
   char save = '.';
   
   var = erase_var(var);
   Var temp = search_var(array, var);
   if (temp.name != "NONE"){
-    Print("type: " + to_string(temp.type));
+    //Print("type: " + to_string(temp.type));
     return temp.type;   
   }
   else {
     return save;
   }
 }
-string get_variable(list<Var> array, string var){
-  Print(var);
+string get_variable(list<Var>* array, string var){
+  //Print(var);
   var = erase_var(var);
-  Print("new var: " + var);
+  //Print("new var: " + var);
   Var temp = search_var(array, var);
-  Print("Found Var name: " + temp.name);
-    Print("Found Var value: " + temp.value);
+  //Print("Found Var name: " + temp.name);
+    //Print("Found Var value: " + temp.value);
   if (temp.name != "NONE"){
     string final = temp.type + temp.value;
-    Print(final);
+   // Print(final);
     return final;
   
     }
@@ -452,10 +437,10 @@ string get_variable(list<Var> array, string var){
 }
 
 
-int cases()
+int cases(list<Var>* val_array)
   {
     // array that stores all variables
-    list<Var> val_array;
+    
     int enumVar = enumFind();
     char op;
     string val, res_s;
@@ -468,22 +453,22 @@ int cases()
         case 0:
         {
 // needs to implement that previous variables can be taken
-          Print("add");
+         // Print("add");
           op = '+';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
-          Print(num1);
+          //Print(num1);
         //check input type
           c1 = input_type(num1);
           c2 = input_type(num2);
           if (c1 == '.'){
-            Print("Get into .");
+            //Print("Get into .");
             c1 = get_variable_type(val_array, num1);
-            Print(c1);
-            num1 = get_variable(val_array,num1);
-            Print(num1);
+            //Print(c1);
+            num1 = get_variable(val_array, num1);
+            //Print(num1);
           }
           if (c2 == '.'){
             c2 = get_variable_type(val_array, num2);
@@ -537,20 +522,33 @@ int cases()
           }
          
           store_val(val_array, var1);
-          var1.print_c();
+         // var1.print_c();
   
             // do stuff
             break;
         }
         case 1:
         {
-          Print("sub");
+          //Print("sub");
           op = '-';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
-
+        //check input type
+          c1 = input_type(num1);
+          c2 = input_type(num2);
+          if (c1 == '.'){
+            //Print("Get into .");
+            c1 = get_variable_type(val_array, num1);
+            //Print(c1);
+            num1 = get_variable(val_array, num1);
+            //Print(num1);
+          }
+          if (c2 == '.'){
+            c2 = get_variable_type(val_array, num2);
+            num2 = get_variable(val_array, num2);
+          }
                     //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
             var1.value = calc_i(num1, num2, op); 
@@ -595,19 +593,35 @@ int cases()
             break;
           }
           store_val(val_array, var1);
-          var1.print_c();
+         // var1.print_c();
 
             // do stuff
             break;
         }
         case 2:
         {
-          Print("div");
+          //Print("div");
           op='/';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
+
+        //check input type
+          c1 = input_type(num1);
+          c2 = input_type(num2);
+          if (c1 == '.'){
+            //Print("Get into .");
+            c1 = get_variable_type(val_array, num1);
+            //Print(c1);
+            num1 = get_variable(val_array, num1);
+            //Print(num1);
+          }
+          if (c2 == '.'){
+            c2 = get_variable_type(val_array, num2);
+            num2 = get_variable(val_array, num2);
+          }
+          
              //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
             var1.value = calc_i(num1, num2, op); 
@@ -652,18 +666,31 @@ int cases()
             break;
           }
           store_val(val_array, var1);
-          var1.print_c();
+          //var1.print_c();
             break;
         }
         case 3:
         {
-          Print("mul");
+          //Print("mul");
           op = '*';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
-
+        //check input type
+          c1 = input_type(num1);
+          c2 = input_type(num2);
+          if (c1 == '.'){
+            //Print("Get into .");
+            c1 = get_variable_type(val_array, num1);
+            //Print(c1);
+            num1 = get_variable(val_array, num1);
+            //Print(num1);
+          }
+          if (c2 == '.'){
+            c2 = get_variable_type(val_array, num2);
+            num2 = get_variable(val_array, num2);
+          }
                    //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
             var1.value = calc_i(num1, num2, op); 
@@ -709,20 +736,33 @@ int cases()
           }
           
           store_val(val_array, var1);
-          var1.print_c();
+         // var1.print_c();
             // do stuff
             break;
         }
         case 4:
         {
-          Print("powr");
+          //Print("powr");
           op = '^';
           cin >> val;
           var1.name = val;
           cin >> num1;
           cin >> num2;
          // var1.value = to_string(pow(num1, num2)); 
-         
+                 //check input type
+          c1 = input_type(num1);
+          c2 = input_type(num2);
+          if (c1 == '.'){
+            //Print("Get into .");
+            c1 = get_variable_type(val_array, num1);
+            //Print(c1);
+            num1 = get_variable(val_array, num1);
+            //Print(num1);
+          }
+          if (c2 == '.'){
+            c2 = get_variable_type(val_array, num2);
+            num2 = get_variable(val_array, num2);
+          }
           //equal
           if (input_type(num1) == '$' && input_type(num2) == '$'){
             var1.value = calc_i(num1, num2, op); 
@@ -770,7 +810,7 @@ int cases()
           
           
           store_val(val_array, var1);
-          var1.print_c();
+         // var1.print_c();
             // do stuff
             break;
         }
